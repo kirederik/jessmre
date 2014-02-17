@@ -138,7 +138,7 @@
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
-    ?adjacent <- (adjacent (adj ?toBorrow) (n ?t) (column ?column))
+    ?adjacent <- (adjacent (adj ?toBorrow) (column ?column))
     =>
     ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)    
     (modify ?subGoal (top (+ ?t 10)))
@@ -191,9 +191,8 @@
 (assert (problem (subgoals)))
 (run)
 (reset)
-(assert (subtraction (top 5 4) (bottom 5 4 )))
-(assert (desirable (result 0 0)))
+(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
+(assert (desirable (result 2 9 4 8)))
 (assert (problem (subgoals)))
 (run)
-
 

@@ -144,7 +144,6 @@
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
-    ?adjacent <- (adjacent (adj ?toBorrow) (n ?t) (column ?column))
     ?leftMost <- (leftmost (column ?lmcolumn))
     (test (eq (+ 1 ?column) ?lmcolumn))    
     =>
@@ -159,7 +158,6 @@
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
-    ?adjacent <- (adjacent (adj ?toBorrow) (n ?t) (column ?column))
     ?leftMost <- (leftmost (column ?lmcolumn))
     (test (neq (+ 1 ?column) ?lmcolumn))    
     =>
