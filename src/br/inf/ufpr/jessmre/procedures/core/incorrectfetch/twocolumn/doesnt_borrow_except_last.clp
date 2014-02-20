@@ -1,4 +1,4 @@
-(provide br/inf/ufpr/jessmre/procedures/core/missingrule/twocolumn/doesnt_borrow_except_last)
+(provide br/inf/ufpr/jessmre/procedures/core/incorrectfetch/twocolumn/doesnt_borrow_except_last)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)

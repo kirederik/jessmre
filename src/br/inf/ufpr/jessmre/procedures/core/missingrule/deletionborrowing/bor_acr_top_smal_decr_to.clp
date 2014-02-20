@@ -28,7 +28,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract 
-    "Regra inicial da subtração"
+    "Regra inicial da subtraï¿½ï¿½o"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (eq (length$ $?ttail) (length$ $?btail)))
@@ -49,7 +49,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract-no-adjacent
-    "Regra inicial da subtração, mesmo número de colunas, sem adjacentes"
+    "Regra inicial da subtraï¿½ï¿½o, mesmo nï¿½mero de colunas, sem adjacentes"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (eq (length$ $?ttail) (length$ $?btail)))
@@ -69,7 +69,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract-no-bottom
-    "Regra inicial da subtração, top com maior número de colunas"
+    "Regra inicial da subtraï¿½ï¿½o, top com maior nï¿½mero de colunas"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (> (length$ $?ttail) (length$ $?btail)))
@@ -87,7 +87,7 @@
 ;    AND there is nothing to subtract from
 ; THEN remove subtract-goal from stack
 (defrule subtract-no-more-elements
-    "Não há mais elementos para subtrair"
+    "Nï¿½o hï¿½ mais elementos para subtrair"
     ?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top $?t) (bottom $?b))
     (test (eq (length$ $?b) 0))
@@ -102,7 +102,7 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col
-    "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
+    "Regra para efetuar a subtraï¿½ï¿½o de uma coluna -- Sem emprï¿½stimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
@@ -122,7 +122,7 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col-borrow
-    "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
+    "Regra para efetuar a subtraï¿½ï¿½o de uma coluna -- Sem emprï¿½stimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
@@ -138,7 +138,7 @@
 ; THEN increment top by 10
 ;      decrement adjacent
 (defrule borrow
-	"Regra para efetuar empréstimo"
+	"Regra para efetuar emprï¿½stimo"
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
@@ -153,7 +153,7 @@
 
 
 (defrule decr
-    "Regra para efetuar o decremento -- Sem empréstimo"
+    "Regra para efetuar o decremento -- Sem emprÃ©stimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
@@ -165,7 +165,7 @@
 )
 
 (defrule decr-bug
-    "Regra para efetuar o decremento -- Sem empréstimo"
+    "Regra para efetuar o decremento -- Sem emprï¿½stimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))    
@@ -179,7 +179,7 @@
 
 
 (defrule decr-borrow
-    "Regra para efetuar o decremento -- Com empréstimo"
+    "Regra para efetuar o decremento -- Com emprï¿½stimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
@@ -191,7 +191,7 @@
 
 
 (defrule end-rule
-	"Última regra. Apenas imprime o resultado"
+	"ï¿½ltima regra. Apenas imprime o resultado"
     ?problem <- (problem (subgoals ?endGoal $?rest))
     (test (eq ?endGoal end-goal))
     ?r <- (subtraction (result $?res))

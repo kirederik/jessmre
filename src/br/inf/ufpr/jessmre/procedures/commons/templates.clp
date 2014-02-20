@@ -8,7 +8,7 @@
 (deftemplate borrow-goal (multislot incr))
 (deftemplate decr-goal (slot column))
 (deftemplate problem (multislot subgoals))
-(deftemplate adjacent (slot adj) (slot n) (slot column))
+(deftemplate adjacent (slot adj) (slot n) (slot adjbot) (slot column))
 
 ;; For tests purpose
 (deftemplate desirable (multislot result))

@@ -1,12 +1,10 @@
-(provide br/inf/ufpr/jessmre/procedures/core/missingrule/twocolumn/borrow_no_decrement_only_last)
+(provide br/inf/ufpr/jessmre/procedures/core/incorrectfetch/noadjacent/borrow_skip_equal)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
 
-(deftemplate leftmost (slot column))
+;pag 115
 
-
-; Pag 115
 ; Initial rule
 ; IF exists a problem and there is no subgoals
 ; THEN set the subtract as the new subgoal
@@ -16,7 +14,6 @@
     ?subtract <- (subtraction (top $?top) (bottom $?bottom))
 	=>
     (modify ?subtract (result (create$)))
-    (assert (leftmost (column (- (length$ $?top) 1))))    
     (bind ?subGoal (assert (subtract-goal (top $?top) (bottom $?bottom))))
     (bind ?endGoal end-goal)
     (modify ?problem (subgoals ?subGoal ?endGoal))
@@ -144,6 +141,7 @@
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
+    ?adjacent <- (adjacent (adj ?toBorrow) (column ?column))
     =>
     ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)    
     (modify ?subGoal (top (+ ?t 10)))
@@ -156,24 +154,36 @@
     "Regra para efetuar o decremento -- Sem empréstimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
-    ?subGoal <- (sub1col-goal (top ?t) (order ?column))
-    ?leftMost <- (leftmost (column ?lmcolumn))
-    (test (eq ?column ?lmcolumn))
+    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
+	(test (> ?t 0))
+    (test (>= ?t ?b))
     =>
     (modify ?subGoal (top (- ?t 1)))
     (modify ?problem (subgoals $?goals))
 )
 
+(defrule decr-bug
+    "Regra para efetuar o decremento -- Sem empréstimo"
+    ?problem <- (problem (subgoals ?decrGoal $?goals))
+    ?decrGoal <- (decr-goal (column ?column))
+    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
+	(test (> ?t 0))
+    (test (eq ?t ?b))
+    =>
+    (modify ?decrGoal (column (+ ?column 1 )))
+    (modify ?problem (subgoals ?decrGoal $?goals))
+)
 
-(defrule decr-no-leftmost
+
+(defrule decr-borrow
     "Regra para efetuar o decremento -- Com empréstimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
-    ?leftMost <- (leftmost (column ?lmcolumn))
-    (test (neq ?column ?lmcolumn))
+	(test (eq ?t 0))
     =>
-    (modify ?problem (subgoals $?goals))
+    (bind ?borrow (assert (borrow-goal (incr ?column))))
+    (modify ?problem (subgoals ?borrow ?decrGoal $?goals))
 )
 
 
@@ -192,7 +202,8 @@
 )
 
 
-(assert (subtraction (top 6 2 6 2) (bottom 4 4 4 4)))
-(assert (desirable (result 1 8 2 8)))
+(assert (subtraction (top 9 2 3) (bottom 4 2 7)))
+(assert (desirable (result 4 0 6)))
 (assert (problem (subgoals)))
 (run)
+

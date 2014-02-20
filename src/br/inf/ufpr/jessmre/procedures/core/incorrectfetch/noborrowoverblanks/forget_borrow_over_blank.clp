@@ -1,10 +1,7 @@
-(provide br/inf/ufpr/jessmre/procedures/core/missingrule/deletionborrowing/bor_acr_top_smal_decr_to)
+(provide br/inf/ufpr/jessmre/procedures/core/incorrectfetch/noborrowoverblanks/forget_borrow_over_blanks)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
-
-
-; Pag 116
 
 ; Initial rule
 ; IF exists a problem and there is no subgoals
@@ -28,13 +25,13 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract 
-    "Regra inicial da subtra��o"
+    "Regra inicial da subtração"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (eq (length$ $?ttail) (length$ $?btail)))
 	(test (> (length$ $?ttail) 0))
     =>
-    (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (column (- (length$ $?ttail) 1))))
+    (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (adjbot ?bhead) (column (- (length$ $?ttail) 1))))
     (bind ?sub1ColGoal (assert (sub1col-goal  (top ?thead) (bottom ?bhead) (order (length$ ?ttail)))))
     (bind ?subNextGoal (assert (subtract-goal (top ?ttail) (bottom ?btail))))
     (bind ?goals (create$ ?sub1ColGoal $?endGoal))
@@ -49,7 +46,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract-no-adjacent
-    "Regra inicial da subtra��o, mesmo n�mero de colunas, sem adjacentes"
+    "Regra inicial da subtração, mesmo número de colunas, sem adjacentes"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (eq (length$ $?ttail) (length$ $?btail)))
@@ -69,12 +66,12 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract-no-bottom
-    "Regra inicial da subtra��o, top com maior n�mero de colunas"
+    "Regra inicial da subtração, top com maior número de colunas"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (> (length$ $?ttail) (length$ $?btail)))
     =>
-    (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (column (- (length$ $?ttail) 1))))
+    (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (adjbot -1) (column (- (length$ $?ttail) 1))))
     (bind ?sub1ColGoal (assert (sub1col-goal (top ?thead) (bottom 0) (order (length$ $?ttail)))))
     (bind ?subNextGoal (assert (subtract-goal (top ?ttail) (bottom (create$ ?bhead ?btail)))))
     (bind ?goals (create$ ?sub1ColGoal $?endGoal))
@@ -87,7 +84,7 @@
 ;    AND there is nothing to subtract from
 ; THEN remove subtract-goal from stack
 (defrule subtract-no-more-elements
-    "N�o h� mais elementos para subtrair"
+    "Não há mais elementos para subtrair"
     ?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top $?t) (bottom $?b))
     (test (eq (length$ $?b) 0))
@@ -102,7 +99,7 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col
-    "Regra para efetuar a subtra��o de uma coluna -- Sem empr�stimo"
+    "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
@@ -122,7 +119,7 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col-borrow
-    "Regra para efetuar a subtra��o de uma coluna -- Sem empr�stimo"
+    "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
@@ -138,17 +135,20 @@
 ; THEN increment top by 10
 ;      decrement adjacent
 (defrule borrow
-	"Regra para efetuar empr�stimo"
+	"Regra para efetuar empréstimo"
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
-    ?adjacent <- (adjacent (adj ?toBorrow) (column ?column))
+    ?adjacent <- (adjacent (adj ?toBorrow) (adjbot ?adjbot) (column ?column))
     =>
-    ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)        
-	(modify ?subGoal (top (+ ?t 10)))
-    (bind ?decrGoal (assert (decr-goal (column (+ ?column 1)))))
+    ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)    
+    (modify ?subGoal (top (+ ?t 10)))
+    (if (neq ?adjbot -1) then
+    	(bind ?decrGoal (assert (decr-goal (column (+ ?column 1)))))
+    	(modify ?problem (subgoals ?decrGoal $?goals))
+     else
+        (modify ?problem (subgoals $?goals)))
 
-    (modify ?problem (subgoals ?decrGoal $?goals))
 )
 
 
@@ -156,30 +156,16 @@
     "Regra para efetuar o decremento -- Sem empréstimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
-    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
+    ?subGoal <- (sub1col-goal (top ?t) (order ?column))
 	(test (> ?t 0))
-    (test (> ?t ?b))
     =>
     (modify ?subGoal (top (- ?t 1)))
     (modify ?problem (subgoals $?goals))
 )
 
-(defrule decr-bug
-    "Regra para efetuar o decremento -- Sem empr�stimo"
-    ?problem <- (problem (subgoals ?decrGoal $?goals))
-    ?decrGoal <- (decr-goal (column ?column))
-    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))    
-	(test (> ?t 0))
-    (test (<= ?t ?b))
-    =>
-    (printout t "ola2" crlf)
-    (modify ?decrGoal (column (- ?column 1)))
-    (modify ?problem (subgoals ?decrGoal $?goals))
-)
-
 
 (defrule decr-borrow
-    "Regra para efetuar o decremento -- Com empr�stimo"
+    "Regra para efetuar o decremento -- Com empréstimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
@@ -191,7 +177,7 @@
 
 
 (defrule end-rule
-	"�ltima regra. Apenas imprime o resultado"
+	"Última regra. Apenas imprime o resultado"
     ?problem <- (problem (subgoals ?endGoal $?rest))
     (test (eq ?endGoal end-goal))
     ?r <- (subtraction (result $?res))
@@ -204,9 +190,8 @@
     (printout t "Subtraction = " $?res crlf "The End" crlf )
 )
 
-(assert (subtraction (top 5 1 3) (bottom 2 6 8)))
-(assert (desirable (result 2 5 4)))
+
+(assert (subtraction (top 3 4 7) (bottom 9)))
+(assert (desirable (result 3 4 8)))
 (assert (problem (subgoals)))
 (run)
-
-

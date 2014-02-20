@@ -1,4 +1,4 @@
-(provide br/inf/ufpr/jessmre/procedures/core/missingrule/noadjacent/borrow_dont_decrement_top_smaller)
+(provide br/inf/ufpr/jessmre/procedures/core/incorrectfetch/noadjacent/borrow_dont_decrement_unless_top_smaller)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -156,7 +156,7 @@
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
 	(test (> ?t 0))
-    (test (>= ?t ?b))
+    (test (> ?t ?b))
     =>
     (modify ?subGoal (top (- ?t 1)))
     (modify ?problem (subgoals $?goals))
@@ -168,7 +168,7 @@
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
 	(test (> ?t 0))
-    (test (< ?t ?b))
+    (test (<= ?t ?b))
     =>
     (modify ?problem (subgoals $?goals))
 )
@@ -201,8 +201,8 @@
 )
 
 
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 5 8)))
+(assert (subtraction (top 7 3 3 2) (bottom 4 8 3 4)))
+(assert (desirable (result 2 5 0 8)))
 (assert (problem (subgoals)))
 (run)
 
