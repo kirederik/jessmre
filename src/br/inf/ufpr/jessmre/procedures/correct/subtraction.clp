@@ -24,7 +24,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract 
-    "Regra inicial da subtra√ß√£o"
+    "Regra inicial da subtraÁ„o"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (eq (length$ $?ttail) (length$ $?btail)))
@@ -45,7 +45,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract-no-adjacent
-    "Regra inicial da subtra√ß√£o, mesmo n√∫mero de colunas, sem adjacentes"
+    "Regra inicial da subtraÁ„o, mesmo n˙mero de colunas, sem adjacentes"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (eq (length$ $?ttail) (length$ $?btail)))
@@ -65,7 +65,7 @@
 ; THEN for each column on the problem
 ;      set the sub1col-goal to this column
 (defrule subtract-no-bottom
-    "Regra inicial da subtra√ß√£o, top com maior n√∫mero de colunas"
+    "Regra inicial da subtraÁ„o, top com maior n˙mero de colunas"
 	?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top ?thead $?ttail) (bottom ?bhead $?btail))
 	(test (> (length$ $?ttail) (length$ $?btail)))
@@ -83,7 +83,7 @@
 ;    AND there is nothing to subtract from
 ; THEN remove subtract-goal from stack
 (defrule subtract-no-more-elements
-    "N√£o h√° mais elementos para subtrair"
+    "N„o h· mais elementos para subtrair"
     ?problem <- (problem (subgoals ?subGoal $?endGoal))
     ?subGoal <- (subtract-goal (top $?t) (bottom $?b))
     (test (eq (length$ $?b) 0))
@@ -98,7 +98,7 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col
-    "Regra para efetuar a subtra√ß√£o de uma coluna -- Sem empr√©stimo"
+    "Regra para efetuar a subtraÁ„o de uma coluna -- Sem emprÈstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
@@ -118,7 +118,7 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col-borrow
-    "Regra para efetuar a subtra√ß√£o de uma coluna -- Sem empr√©stimo"
+    "Regra para efetuar a subtraÁ„o de uma coluna -- Sem emprÈstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
@@ -134,7 +134,7 @@
 ; THEN increment top by 10
 ;      decrement adjacent
 (defrule borrow
-	"Regra para efetuar empr√©stimo"
+	"Regra para efetuar emprÈstimo"
     ?problem <- (problem (subgoals ?borrowGoal $?goals))
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
@@ -148,7 +148,7 @@
 
 
 (defrule decr
-    "Regra para efetuar o decremento -- Sem empr√©stimo"
+    "Regra para efetuar o decremento -- Sem emprÈstimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
@@ -160,7 +160,7 @@
 
 
 (defrule decr-borrow
-    "Regra para efetuar o decremento -- Com empr√©stimo"
+    "Regra para efetuar o decremento -- Com emprÈstimo"
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
@@ -172,7 +172,7 @@
 
 
 (defrule end-rule
-	"√öltima regra. Apenas imprime o resultado"
+	"⁄ltima regra. Apenas imprime o resultado"
     ?problem <- (problem (subgoals ?endGoal $?rest))
     (test (eq ?endGoal end-goal))
     ?r <- (subtraction (result $?res))
@@ -195,4 +195,3 @@
 (assert (desirable (result 2 9 4 8)))
 (assert (problem (subgoals)))
 (run)
-

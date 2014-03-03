@@ -1,6 +1,13 @@
-
+(provide br/inf/ufpr/jessmre/procedures/core/testpattern/noadjacentborrow/x-n=n_after_borrow)
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
+
+(deftemplate original (slot value) (slot column))
+
+(deffunction hasBeenBorrowedFrom (?oldValue ?currentValue)
+	(return (eq ?oldValue ?currentValue)))
+
+;pg 117
 
 ; Initial rule
 ; IF exists a problem and there is no subgoals
@@ -31,6 +38,7 @@
 	(test (> (length$ $?ttail) 0))
     =>
     (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (column (- (length$ $?ttail) 1))))
+    (assert (original (value ?thead) (column (length$ ?ttail))))
     (bind ?sub1ColGoal (assert (sub1col-goal  (top ?thead) (bottom ?bhead) (order (length$ ?ttail)))))
     (bind ?subNextGoal (assert (subtract-goal (top ?ttail) (bottom ?btail))))
     (bind ?goals (create$ ?sub1ColGoal $?endGoal))
@@ -51,6 +59,7 @@
 	(test (eq (length$ $?ttail) (length$ $?btail)))
 	(test (eq (length$ $?ttail) 0))
     =>
+    (assert (original (value ?thead) (column (length$ ?ttail))))
     (bind ?sub1ColGoal (assert (sub1col-goal  (top ?thead) (bottom ?bhead) (order (length$ ?ttail)))))
     (bind ?subNextGoal (assert (subtract-goal (top ?ttail) (bottom ?btail))))
     (bind ?goals (create$ ?sub1ColGoal $?endGoal))
@@ -71,6 +80,7 @@
 	(test (> (length$ $?ttail) (length$ $?btail)))
     =>
     (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (column (- (length$ $?ttail) 1))))
+    (assert (original (value ?thead) (column (length$ ?ttail))))
     (bind ?sub1ColGoal (assert (sub1col-goal (top ?thead) (bottom 0) (order (length$ $?ttail)))))
     (bind ?subNextGoal (assert (subtract-goal (top ?ttail) (bottom (create$ ?bhead ?btail)))))
     (bind ?goals (create$ ?sub1ColGoal $?endGoal))
@@ -102,9 +112,10 @@
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
+    ?original <- (original (value ?v) (column ?order))        
     (test (>= ?t ?b))
 	=>
-    (bind ?resp (do-sub ?t ?b))
+    (if (eq ?t ?v) then (bind ?resp (do-sub ?t ?b)) else (bind ?resp ?b))
     ;(printout t "Sub less than fired: " ?t " - " ?b " = " ?resp crlf) 
     (modify ?result (result (create$ ?resp $?r)))
     (modify ?problem (subgoals $?goals))
@@ -118,12 +129,14 @@
 ; THEN calculate top - bot
 ;      pop the current subgoal from goals stack
 (defrule sub1Col-borrow
-    "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
+    "Regra para efetuar a subtração de uma coluna -- Com empréstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
+    ?original <- (original (value ?v) (column ?order))        
     (test (< ?t ?b))
 	=>
+    (if (eq ?t ?v) then (bind ?resp (do-sub ?t ?b)) else (bind ?resp ?b))    
     (bind ?borrow (assert (borrow-goal (incr ?order))))
     (modify ?problem (subgoals ?borrow ?subGoal $?goals))
 )
@@ -139,9 +152,12 @@
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
     ?adjacent <- (adjacent (adj ?toBorrow) (column ?column))
+    ?original <- (original (value ?v) (column ?order))        
+    
     =>
     ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)    
     (modify ?subGoal (top (+ ?t 10)))
+    (modify ?original (value (+ ?t 10)))
     (bind ?decrGoal (assert (decr-goal (column (+ ?column 1)))))
     (modify ?problem (subgoals ?decrGoal $?goals))
 )
@@ -154,6 +170,7 @@
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
 	(test (> ?t 0))
     =>
+
     (modify ?subGoal (top (- ?t 1)))
     (modify ?problem (subgoals $?goals))
 )
@@ -185,13 +202,7 @@
     (printout t "Subtraction = " $?res crlf "The End" crlf )
 )
 
-
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 2 3 4) (bottom 1 6 5)))
+(assert (desirable (result 1 6 9)))
 (assert (problem (subgoals)))
 (run)

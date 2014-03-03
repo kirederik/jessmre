@@ -1,3 +1,4 @@
+(provide br/inf/ufpr/jessmre/procedures/core/misc/simple_problem_stutter_subtract)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -71,7 +72,7 @@
 	(test (> (length$ $?ttail) (length$ $?btail)))
     =>
     (assert (adjacent (n (first$ $?ttail)) (adj ?thead) (column (- (length$ $?ttail) 1))))
-    (bind ?sub1ColGoal (assert (sub1col-goal (top ?thead) (bottom 0) (order (length$ $?ttail)))))
+    (bind ?sub1ColGoal (assert (sub1col-goal (top ?thead) (bottom ?bhead) (order (length$ $?ttail)))))
     (bind ?subNextGoal (assert (subtract-goal (top ?ttail) (bottom (create$ ?bhead ?btail)))))
     (bind ?goals (create$ ?sub1ColGoal $?endGoal))
 	(modify ?problem (subgoals ?subNextGoal ?goals))
@@ -186,12 +187,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 3 4 8) (bottom 2)))
+(assert (desirable (result 1 2 6)))
 (assert (problem (subgoals)))
 (run)

@@ -1,7 +1,7 @@
-(deftemplate subtraction "SubtraÃ§Ã£o" (multislot top) (multislot bottom) (multislot result))
+(deftemplate subtraction "Subtração" (multislot top) (multislot bottom) (multislot result))
 
 ;; Goals
-; Note -> The order slot just exists to diferentiation purpose
+
 (deftemplate subtract-goal (multislot top) (multislot bottom))
 (deftemplate sub1col-goal (slot top) (slot bottom) (slot result) (slot order))
 (deftemplate end-goal (multislot result))

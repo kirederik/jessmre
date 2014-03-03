@@ -1,3 +1,4 @@
+(provide br/inf/ufpr/jessmre/procedures/core/misc/decrement_all_on_mult_zero)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -141,7 +142,7 @@
     ?adjacent <- (adjacent (adj ?toBorrow) (column ?column))
     =>
     ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)    
-    (modify ?subGoal (top (+ ?t 10)))
+    (if (eq ?toBorrow 0) then (modify ?subGoal (top (+ ?t 9))) else (modify ?subGoal (top (+ ?t 10))))
     (bind ?decrGoal (assert (decr-goal (column (+ ?column 1)))))
     (modify ?problem (subgoals ?decrGoal $?goals))
 )
@@ -186,12 +187,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 6 0 0) (bottom 1 4 2)))
+(assert (desirable (result 4 5 7)))
 (assert (problem (subgoals)))
 (run)

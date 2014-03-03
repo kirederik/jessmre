@@ -1,3 +1,4 @@
+(provide br/inf/ufpr/jessmre/procedures/core/testpattern/overgeneralization/n-n_causes_borrow)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -102,7 +103,7 @@
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
-    (test (>= ?t ?b))
+    (test (> ?t ?b))
 	=>
     (bind ?resp (do-sub ?t ?b))
     ;(printout t "Sub less than fired: " ?t " - " ?b " = " ?resp crlf) 
@@ -122,7 +123,7 @@
     ?problem <- (problem (subgoals ?subGoal $?goals))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
-    (test (< ?t ?b))
+    (test (<= ?t ?b))
 	=>
     (bind ?borrow (assert (borrow-goal (incr ?order))))
     (modify ?problem (subgoals ?borrow ?subGoal $?goals))
@@ -186,12 +187,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 9 5 3) (bottom 1 5 2)))
+(assert (desirable (result 7 10 1)))
 (assert (problem (subgoals)))
 (run)

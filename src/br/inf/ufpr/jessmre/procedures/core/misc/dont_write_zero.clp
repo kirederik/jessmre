@@ -1,3 +1,4 @@
+(provide br/inf/ufpr/jessmre/procedures/core/misc/dont_write_zero)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -105,7 +106,8 @@
     (test (>= ?t ?b))
 	=>
     (bind ?resp (do-sub ?t ?b))
-    ;(printout t "Sub less than fired: " ?t " - " ?b " = " ?resp crlf) 
+    ;(printout t "Sub less than fired: " ?t " - " ?b " = " ?resp crlf)
+    (if (eq ?resp 0) then (bind ?resp _)) 
     (modify ?result (result (create$ ?resp $?r)))
     (modify ?problem (subgoals $?goals))
 )
@@ -186,12 +188,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 2 4) (bottom 1 4)))
+(assert (desirable (result 1 _)))
 (assert (problem (subgoals)))
 (run)

@@ -1,3 +1,4 @@
+(provide br/inf/ufpr/jessmre/procedures/core/testpattern/overgeneralization/borrow_from_one_is_ten)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -152,9 +153,20 @@
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
-	(test (> ?t 0))
+	(test (> ?t 1))
     =>
     (modify ?subGoal (top (- ?t 1)))
+    (modify ?problem (subgoals $?goals))
+)
+
+(defrule decr-bug
+    "Regra para efetuar o decremento -- Sem empréstimo"
+    ?problem <- (problem (subgoals ?decrGoal $?goals))
+    ?decrGoal <- (decr-goal (column ?column))
+    ?subGoal <- (sub1col-goal (top ?t) (order ?column))
+	(test (eq ?t 1))
+    =>
+    (modify ?subGoal (top 10))
     (modify ?problem (subgoals $?goals))
 )
 
@@ -186,12 +198,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 4 1 4) (bottom 2 7 7)))
+(assert (desirable (result 2 3 7)))
 (assert (problem (subgoals)))
 (run)

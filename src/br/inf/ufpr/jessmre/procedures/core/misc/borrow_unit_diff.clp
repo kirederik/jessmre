@@ -1,6 +1,9 @@
+(provide br/inf/ufpr/jessmre/procedures/core/misc/borrow_only_from_top_smaller)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
+
+(deftemplate decr-amount (slot value))
 
 ; Initial rule
 ; IF exists a problem and there is no subgoals
@@ -11,6 +14,7 @@
     ?subtract <- (subtraction (top $?top) (bottom $?bottom))
 	=>
     (modify ?subtract (result (create$)))
+    (assert (decr-amount (value 0)))
     (bind ?subGoal (assert (subtract-goal (top $?top) (bottom $?bottom))))
     (bind ?endGoal end-goal)
     (modify ?problem (subgoals ?subGoal ?endGoal))
@@ -139,9 +143,11 @@
     ?borrowGoal <- (borrow-goal (incr ?column))
     ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?column))
     ?adjacent <- (adjacent (adj ?toBorrow) (column ?column))
+    ?decrAmount <- (decr-amount (value ?v))
     =>
     ;(printout t "We have a " ?t " at column " ?column " that will borrow from " ?toBorrow " at column " (+ ?column 1) crlf)    
-    (modify ?subGoal (top (+ ?t 10)))
+    (modify ?subGoal (top (+ ?t (- ?b ?t))))
+    (modify ?decrAmount (value (- ?b ?t)))
     (bind ?decrGoal (assert (decr-goal (column (+ ?column 1)))))
     (modify ?problem (subgoals ?decrGoal $?goals))
 )
@@ -152,9 +158,10 @@
     ?problem <- (problem (subgoals ?decrGoal $?goals))
     ?decrGoal <- (decr-goal (column ?column))
     ?subGoal <- (sub1col-goal (top ?t) (order ?column))
-	(test (> ?t 0))
+    ?decrAmount <- (decr-amount (value ?v))    
+	(test (> ?t 0))    
     =>
-    (modify ?subGoal (top (- ?t 1)))
+    (modify ?subGoal (top (- ?t ?v)))
     (modify ?problem (subgoals $?goals))
 )
 
@@ -186,12 +193,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 8 6) (bottom 2 9)))
+(assert (desirable (result 3 0)))
 (assert (problem (subgoals)))
 (run)

@@ -1,3 +1,4 @@
+(provide br/inf/ufpr/jessmre/procedures/core/misc/diff_n-0=0)
 
 (require br/inf/ufpr/jessmre/procedures/commons/templates)
 (require br/inf/ufpr/jessmre/procedures/commons/functions)
@@ -100,11 +101,23 @@
 (defrule sub1Col
     "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
-    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
+    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) {bottom > 0} (order ?order))
     ?result <- (subtraction (result $?r))
     (test (>= ?t ?b))
 	=>
     (bind ?resp (do-sub ?t ?b))
+    ;(printout t "Sub less than fired: " ?t " - " ?b " = " ?resp crlf) 
+    (modify ?result (result (create$ ?resp $?r)))
+    (modify ?problem (subgoals $?goals))
+)
+
+(defrule sub1Col-bug
+    ?problem <- (problem (subgoals ?subGoal $?goals))
+    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) {bottom == 0} (order ?order))
+    ?result <- (subtraction (result $?r))
+    (test (>= ?t ?b))
+	=>
+    (bind ?resp 0)
     ;(printout t "Sub less than fired: " ?t " - " ?b " = " ?resp crlf) 
     (modify ?result (result (create$ ?resp $?r)))
     (modify ?problem (subgoals $?goals))
@@ -120,7 +133,7 @@
 (defrule sub1Col-borrow
     "Regra para efetuar a subtração de uma coluna -- Sem empréstimo"
     ?problem <- (problem (subgoals ?subGoal $?goals))
-    ?subGoal <- (sub1col-goal (top ?t) (bottom ?b) (order ?order))
+    ?subGoal <- (sub1col-goal (top ?t) {bottom > 0} (bottom ?b) (order ?order))
     ?result <- (subtraction (result $?r))
     (test (< ?t ?b))
 	=>
@@ -186,12 +199,7 @@
 )
 
 
-(assert (subtraction (top 2 0 0) (bottom 2 5 )))
-(assert (desirable (result 1 7 5)))
-(assert (problem (subgoals)))
-(run)
-(reset)
-(assert (subtraction (top 7 3 3 2) (bottom 4 3 8 4)))
-(assert (desirable (result 2 9 4 8)))
+(assert (subtraction (top 5 7) (bottom 2 0)))
+(assert (desirable (result 3 0)))
 (assert (problem (subgoals)))
 (run)
