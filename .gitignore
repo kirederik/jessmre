@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## generic files to ignore
 *~
 *.lock
@@ -68,3 +69,11 @@ jrebel.lic
 # paulp script
 /.lib/
 .DS_Store
+=======
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+>>>>>>> aff93ea23172e16596d4f2307b03174fa2b5418a
