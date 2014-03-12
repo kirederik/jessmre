@@ -6,12 +6,10 @@ import scalate.ScalateSupport
 class RepairServlet extends RepairMreSystemStack {
 
   get("/") {
-    <html>
-      <body>
-        <h1>Hello, world!</h1>
-        Say <a href="hello-scalate">hello to Scalate</a>.
-      </body>
-    </html>
+    contentType = "text/html"
+    val path = "/index.html"
+    new java.io.File(getServletContext().getResource(path).getFile)
   }
   
 }
+

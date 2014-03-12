@@ -22,7 +22,7 @@ class ClassifierSpec extends Specification {
   
   "When given 15 as the answer, #search" should {
     "contains 'diff_0-n=n' rule" in {
-     val searchResult = classifier.search(Some(15)) 
+     val searchResult = classifier.search(Some(15))
      searchResult must contain(new Rule("diff_0-n=n.clp"))
     }
   }
