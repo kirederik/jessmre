@@ -14,7 +14,7 @@ class ClassifierSpec extends Specification {
     "respond with 'subtraction'" in {
       val searchResult = classifier.search(Some(5))
       searchResult.length mustEqual 1
-      searchResult.apply(0).name mustEqual "subtraction"
+      searchResult.apply(0).rule.name mustEqual "subtraction"
     }
   }
   
@@ -23,13 +23,13 @@ class ClassifierSpec extends Specification {
   "When given 15 as the answer, #search" should {
     "contains 'diff_0-n=n' rule" in {
      val searchResult = classifier.search(Some(15))
-     searchResult must contain(new Rule("diff_0-n=n.clp"))
+     searchResult must contain(new CompleteRule(new Rule("diff_0-n=n.clp"), "testpattern", "overgeneralization"))
     }
   }
   "When given null as the answer, #search" should {
     "contains 'cant_subtract' rule" in {
       val searchResult = classifier.search(None)
-      searchResult must contain(new Rule("cant_subtract.clp"))
+      searchResult must contain(new CompleteRule(new Rule("cant_subtract.clp"), "misc", "all"))
     }
   }
 }

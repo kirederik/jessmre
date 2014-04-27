@@ -5,3 +5,5 @@ case class Rule(name: String, src: String) {
     this(src.replaceFirst(".clp", ""), src)
   }
 }
+
+case class CompleteRule(rule: Rule, category: String, subCategory: String)

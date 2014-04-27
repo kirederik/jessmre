@@ -2,8 +2,18 @@
 
 /* Services */
 
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
 angular.module('myApp.services', []).
-  value('version', '0.1');
+  factory('Step', [function() {
+    return function Step(options) {
+      var config = options || {}, 
+        lnumber = (config.hasOwnProperty("index")) ? config.index : 0;
+
+      Step.prototype.generateLesson = function() {
+        return {
+          top: 123,
+          bot:  13
+        };
+      };
+
+    };
+  }]);

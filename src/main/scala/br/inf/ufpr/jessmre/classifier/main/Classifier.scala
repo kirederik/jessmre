@@ -54,8 +54,8 @@ case class Classifier(topValue: Int, botValue: Int, desiredValue: Int) extends R
     false
   }
   
-  def search(desired: Option[Int]): List[Rule] = {
-    if (desired != None && (desired.get == desiredValue)) return List(new Rule("subtraction"))
+  def search(desired: Option[Int]): List[CompleteRule] = {
+    if (desired != None && (desired.get == desiredValue)) return List(new CompleteRule(new Rule("subtraction"), "correct", "correct"))
     
     val r = for {
       category <- RULES
@@ -67,7 +67,7 @@ case class Classifier(topValue: Int, botValue: Int, desiredValue: Int) extends R
             if {
               run(packageName + category._1 + "/" + subcategory._1 + "/" + rule.src, desired, rule.src)
             }
-          } yield rule
+          } yield new CompleteRule(rule, category._1, subcategory._1)
       } yield rules
     } yield rules
     
