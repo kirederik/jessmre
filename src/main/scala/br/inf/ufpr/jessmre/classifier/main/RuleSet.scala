@@ -1,7 +1,7 @@
 package br.inf.ufpr.jessmre.classifier.main
 
 trait RuleSet {
-  val packageName = "/Users/derik/dev/ufpr/mestrado/repairmre/src/main/scala/br/inf/ufpr/jessmre/procedures/core/";
+  val packageName = "/home/derik/mac/dev/ufpr/mestrado/repairmre/src/main/scala/br/inf/ufpr/jessmre/procedures/core/";
   
   val categories = List(
     "incorrectfetch", "missingrule"
